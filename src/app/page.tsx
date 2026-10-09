@@ -8,6 +8,7 @@ import { NavLink } from "@/components/nav-link";
 import { PageTransition } from "@/components/page-transition";
 import { PinnedGallery } from "@/components/pinned-gallery";
 import { Reveal } from "@/components/reveal";
+import { Typewriter } from "@/components/typewriter";
 import { Photo } from "@/components/photo";
 import { ProductCard } from "@/components/product-card";
 import { LinkButton } from "@/components/ui/button";
@@ -114,13 +115,11 @@ export default function HomePage() {
         aria-labelledby="manifesto"
       >
         <div>
-          <Reveal>
-            <h2 id="manifesto" className="script text-[clamp(3.5rem,9vw,6.5rem)]">
-              Same clothes,
-              <br />
-              different stories.
-            </h2>
-          </Reveal>
+          <Typewriter
+            id="manifesto"
+            lines={["Same clothes,", "different stories."]}
+            className="script text-[clamp(3.5rem,9vw,6.5rem)]"
+          />
           <Reveal delay={0.15}>
             <p className="mt-8 max-w-xl text-sm text-ink/80">
               A Rico Store é mais que uma loja, é um estilo de vida. Do streetwear ao casual e à roupa de trabalho, em

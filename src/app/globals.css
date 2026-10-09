@@ -90,6 +90,22 @@ body {
   line-height: 1;
 }
 
+/* Cursor do texto que se escreve sozinho */
+.caret {
+  display: inline-block;
+  width: 0.06em;
+  height: 0.8em;
+  margin-left: 0.04em;
+  vertical-align: -0.05em;
+  background: currentColor;
+  animation: caret-blink 0.9s steps(1) infinite;
+}
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
 /* Formulários ------------------------------------------------------------- */
 
 .field {
