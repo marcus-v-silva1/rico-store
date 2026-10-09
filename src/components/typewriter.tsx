@@ -1,12 +1,13 @@
 "use client";
 
-import { useInView, useReducedMotion } from "motion/react";
+import { useInView } from "motion/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 
 const CARET_LINGER_MS = 1400;
 
 /**
  * Escreve o texto letra por letra quando entra na tela. Cada linha da lista vira uma linha do título.
+ * Digitar não é movimento de página, então roda mesmo com "reduzir movimento" ligado (senão a frase some).
  * O espaço das letras ainda não escritas já está reservado, então nada pula de lugar enquanto digita.
  */
 export function Typewriter({
@@ -22,14 +23,13 @@ export function Typewriter({
   speed?: number;
 }) {
   const ref = useRef<HTMLHeadingElement>(null);
-  const reduce = useReducedMotion();
   const inView = useInView(ref, { once: true, margin: "0px 0px -20% 0px" });
   const total = lines.reduce((sum, l) => sum + l.length, 0);
   const [typed, setTyped] = useState(0);
   const [caret, setCaret] = useState(true);
 
   useEffect(() => {
-    if (!inView || reduce) return;
+    if (!inView) return;
     let n = 0;
     const timer = window.setInterval(() => {
       n += 1;
@@ -41,9 +41,9 @@ export function Typewriter({
       window.clearInterval(timer);
       window.clearTimeout(hide);
     };
-  }, [inView, reduce, total, speed]);
+  }, [inView, total, speed]);
 
-  const shown = reduce ? total : typed;
+  const shown = typed;
   let index = 0;
 
   return (
@@ -60,7 +60,7 @@ export function Typewriter({
                   return (
                     <span key={ci} className={visible ? undefined : "invisible"}>
                       {char}
-                      {isLast && !reduce && caret && <span className="caret" />}
+                      {isLast && caret && <span className="caret" />}
                     </span>
                   );
                 })}
