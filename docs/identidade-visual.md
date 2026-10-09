@@ -43,10 +43,17 @@ Cores das peças (`COLORS` em `src/content/catalog.ts`): preto, branco, cinza, o
 
 ## Movimento
 
-- **Transição horizontal entre páginas** (View Transitions do React 19.3): ir para frente empurra a página para a esquerda; voltar, para a direita. O cabeçalho fica parado. Desliga sozinha com `prefers-reduced-motion`.
-- **Trilhos horizontais** com `scroll-snap`: categorias, novidades e lookbook viram carrossel de arrastar no celular e grade no computador.
-- **Faixa de marcas** corre na horizontal.
-- Cards fazem um zoom leve de 5% ao passar o mouse.
+Bibliotecas: **motion** (animações), **Lenis** (rolagem suave) e **Embla** (carrossel). Tudo respeita `prefers-reduced-motion`: sem movimento, a página cai na rolagem nativa e nos trilhos de arrastar.
+
+- **Transição horizontal entre páginas** (View Transitions do React 19.3): ir para frente empurra a página para a esquerda; voltar, para a direita. O cabeçalho fica parado.
+- **Hero**: as linhas do título sobem de uma máscara e os dois quadros andam em sentidos opostos ao rolar (parallax).
+- **Lookbook fixado**: no computador, a seção prende na tela e a rolagem vertical vira deslocamento horizontal, com barra de progresso. No celular vira trilho de arrastar.
+- **Novidades**: carrossel de arrastar com setas e barra de progresso.
+- **Marcas na loja**: carrossel infinito com duas fileiras em sentidos opostos (a de baixo só contorno); acelera com a rolagem, inverte ao rolar para cima e pausa com o mouse em cima.
+- **Cabeçalho**: some ao rolar para baixo e volta ao rolar para cima.
+- **Sacola**: gaveta que entra pela direita; abre ao adicionar uma peça.
+- **Entrada das seções**: sobem e aparecem ao entrar na tela (`Reveal`). A frase "Same clothes, different stories." é escrita letra por letra ao aparecer (`Typewriter`).
+- Cards fazem um zoom leve ao passar o mouse.
 
 ## Fotografia (a fazer)
 

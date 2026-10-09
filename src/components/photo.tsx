@@ -11,6 +11,7 @@ export function Photo({
   slot,
   className,
   priority,
+  children,
 }: {
   src?: string;
   alt?: string;
@@ -18,6 +19,8 @@ export function Photo({
   slot: string;
   className?: string;
   priority?: boolean;
+  /** Ilustração provisória exibida no quadro enquanto não há foto. */
+  children?: React.ReactNode;
 }) {
   return (
     <div className={cn("relative overflow-hidden bg-graphite", className)}>
@@ -36,7 +39,8 @@ export function Photo({
           role="img"
           aria-label={`Espaço reservado para foto: ${slot}`}
         >
-          <span className="label text-[0.625rem] text-bone/45">Foto / {slot}</span>
+          {children && <div className="absolute inset-0">{children}</div>}
+          <span className="label relative text-[0.625rem] text-bone/45">Foto / {slot}</span>
         </div>
       )}
     </div>
