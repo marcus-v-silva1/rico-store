@@ -1,0 +1,4 @@
+-- Primeiro administrador: crie a conta pela tela /cadastro e rode isto no SQL Editor
+-- (ou `supabase db query`), trocando o e-mail. Sem usuário logado a trava de papéis não se aplica.
+--
+-- update public.profiles set role = 'admin' where email = 'voce@exemplo.com';

@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+/*
+ * Identidade Rico Store — preto de rua, concreto claro e tipografia larga em itálico.
+ * Cores e fontes são tokens: mude aqui e a loja inteira acompanha (veja docs/identidade-visual.md).
+ */
+@theme {
+  --color-ink: #0f0f0f; /* fundos escuros: cabeçalho, hero, rodapé */
+  --color-graphite: #1a1a1a; /* cartões sobre o preto */
+  --color-smoke: #2a2a2a; /* linhas e bordas sobre o preto */
+  --color-paper: #e5e4e0; /* fundo claro das seções de venda */
+  --color-concrete: #d8d7d2; /* base das fotos e peças */
+  --color-bone: #f6f5f1; /* texto sobre o preto, "branco" da marca */
+  --color-stone: #75746f; /* texto secundário sobre claro */
+  --color-signal: #d6262c; /* vermelho de alerta e promoção, raro */
+  --color-olive: #5b6240; /* cor de apoio, vem da calça cargo */
+
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-label), ui-monospace, monospace;
+  --font-script: var(--font-script-hand), cursive;
+
+  --animate-marquee: marquee 38s linear infinite;
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+:root {
+  color-scheme: light;
+  --gutter: clamp(1rem, 3vw, 1.75rem);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-bone);
+}
+
+/* Tipografia da marca ----------------------------------------------------- */
+
+/** Título largo em itálico, como o logo e o "STREET" do hero. */
+.display {
+  font-weight: 800;
+  font-style: italic;
+  font-variation-settings: "wdth" 125;
+  letter-spacing: -0.02em;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+/** Título largo reto, usado nas seções ("Comprar por categoria"). */
+.heading {
+  font-weight: 800;
+  font-variation-settings: "wdth" 125;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+/** Contorno vazado das palavras secundárias do hero. */
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-bone);
+}
+
+/** Rótulos técnicos em caixa alta e mono: "STREETWEAR / ORIGINAL VIBE". */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.script {
+  font-family: var(--font-script);
+  font-weight: 400;
+  line-height: 1;
+}
+
+/* Formulários ------------------------------------------------------------- */
+
+.field {
+  width: 100%;
+  border: 1px solid var(--color-ink);
+  background: transparent;
+  padding: 0.75rem 0.875rem;
+  font-size: 0.9375rem;
+  border-radius: 0;
+}
+.field::placeholder {
+  color: var(--color-stone);
+}
+.field:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+.field-label {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+/* Sobre fundo preto */
+.on-dark .field {
+  border-color: var(--color-bone);
+  color: var(--color-bone);
+}
+.on-dark .field:focus-visible {
+  outline-color: var(--color-bone);
+}
+
+/* Trilho horizontal: arrasta no celular, vira grade no desktop ------------- */
+.rail {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+  scrollbar-width: none;
+}
+.rail::-webkit-scrollbar {
+  display: none;
+}
+.rail > * {
+  flex: 0 0 min(72%, 18rem);
+  scroll-snap-align: start;
+}
+@media (min-width: 64rem) {
+  .rail {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+  .rail > * {
+    flex: initial;
+  }
+}
+
+/* Transição horizontal entre páginas ---------------------------------------
+ * Ir para frente empurra a página atual para a esquerda; voltar, para a direita.
+ * Ligada por <PageTransition> + <Link transitionTypes>; sem suporte do navegador,
+ * a navegação funciona igual, só sem animação. */
+::view-transition-old(.nav-forward) {
+  --slide-offset: -64px;
+  animation:
+    160ms ease-in both vt-fade reverse,
+    420ms cubic-bezier(0.65, 0, 0.35, 1) both vt-slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --slide-offset: 64px;
+  animation:
+    220ms ease-out 160ms both vt-fade,
+    420ms cubic-bezier(0.65, 0, 0.35, 1) both vt-slide;
+}
+::view-transition-old(.nav-back) {
+  --slide-offset: 64px;
+  animation:
+    160ms ease-in both vt-fade reverse,
+    420ms cubic-bezier(0.65, 0, 0.35, 1) both vt-slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --slide-offset: -64px;
+  animation:
+    220ms ease-out 160ms both vt-fade,
+    420ms cubic-bezier(0.65, 0, 0.35, 1) both vt-slide;
+}
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes vt-slide {
+  from {
+    translate: var(--slide-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+
+/* O cabeçalho fica parado enquanto o conteúdo desliza */
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+/* Cliques passam pela animação em vez de se perderem */
+::view-transition {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+  .marquee-track {
+    animation: none !important;
+  }
+}
