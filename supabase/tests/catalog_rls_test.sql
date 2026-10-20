@@ -8,9 +8,9 @@ insert into auth.users (id, email) values
 update public.profiles set role = 'admin' where id = '00000000-0000-0000-0000-0000000000a1';
 
 insert into public.categories (id, slug, name, garment)
-values ('00000000-0000-0000-0000-0000000000b1', 'camisetas', 'Camisetas', 'tee');
+values ('00000000-0000-0000-0000-0000000000b1', 'cat-teste', 'Categoria teste', 'tee');
 insert into public.colors (id, slug, label, hex, active) values
-  ('00000000-0000-0000-0000-0000000000d1', 'preto', 'Preto', '#000000', true),
+  ('00000000-0000-0000-0000-0000000000d1', 'cor-teste', 'Cor teste', '#000000', true),
   ('00000000-0000-0000-0000-0000000000d2', 'oculta', 'Oculta', '#123456', false);
 insert into public.products (slug, name, category_id, price_cents, garment, status) values
   ('ativo-x', 'Ativo', '00000000-0000-0000-0000-0000000000b1', 9900, 'tee', 'ativo'),
@@ -43,7 +43,7 @@ select is(
 -- Admin
 set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}';
 select lives_ok(
-  $$insert into public.colors (slug, label, hex) values ('branco', 'Branco', '#ffffff')$$,
+  $$insert into public.colors (slug, label, hex) values ('cor-admin', 'Cor admin', '#ffffff')$$,
   'admin insere cor'
 );
 select is((select count(*) from public.products where slug = 'rascunho-x'), 1::bigint, 'admin lê rascunho');

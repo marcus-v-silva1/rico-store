@@ -7,9 +7,9 @@ insert into auth.users (id, email) values
 update public.profiles set role = 'admin' where id = '00000000-0000-0000-0000-0000000000a1';
 
 insert into public.categories (id, slug, name, garment)
-values ('00000000-0000-0000-0000-0000000000b1', 'camisetas', 'Camisetas', 'tee');
+values ('00000000-0000-0000-0000-0000000000b1', 'cat-teste', 'Categoria teste', 'tee');
 insert into public.colors (id, slug, label, hex)
-values ('00000000-0000-0000-0000-0000000000d1', 'preto', 'Preto', '#000000');
+values ('00000000-0000-0000-0000-0000000000d1', 'cor-teste', 'Cor teste', '#000000');
 insert into public.collections (id, slug, title) values
   ('00000000-0000-0000-0000-0000000000e1', 'col-a', 'A'),
   ('00000000-0000-0000-0000-0000000000e2', 'col-b', 'B');
