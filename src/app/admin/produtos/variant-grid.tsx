@@ -6,7 +6,13 @@ import { SIZE_PRESETS, sortSizes } from "@/lib/catalog/sizes";
 import { buildSku } from "@/lib/catalog/slug";
 
 export type GridColor = { id: string; slug: string; label: string; hex: string; active: boolean };
-export type GridInitial = { colorIds: string[]; sizes: string[]; stock: Record<string, string> };
+export type GridInitial = {
+  colorIds: string[];
+  sizes: string[];
+  stock: Record<string, string>;
+  /** Cor principal: a que o card da loja mostra primeiro. */
+  defaultColorId: string | null;
+};
 type CellError = { colorId: string; size: string; message: string };
 
 const PRESETS = [
@@ -23,11 +29,13 @@ export function VariantGrid({
   initial,
   productSlug,
   errors,
+  mainColorError,
 }: {
   colors: GridColor[];
   initial: GridInitial;
   productSlug: string;
   errors: CellError[];
+  mainColorError?: string;
 }) {
   const uid = useId();
   const [rows, setRows] = useState(initial.colorIds);
@@ -35,11 +43,15 @@ export function VariantGrid({
   const [stock, setStock] = useState(initial.stock);
   const [picked, setPicked] = useState("");
   const [otherSize, setOtherSize] = useState("");
+  const [main, setMain] = useState(initial.defaultColorId ?? "");
 
   const byId = new Map(colors.map((c) => [c.id, c]));
   const addable = colors.filter((c) => c.active && !rows.includes(c.id));
   const selected = addable.some((c) => c.id === picked) ? picked : (addable[0]?.id ?? "");
   const other = otherSize.trim();
+  // Cor principal: só entre as cores com alguma célula preenchida (as que viram variante).
+  const mainOptions = rows.filter((id) => sizes.some((s) => (stock[cellKey(id, s)] ?? "").trim() !== ""));
+  const mainValue = mainOptions.includes(main) ? main : "";
 
   function addSizes(more: string[]) {
     setSizes((s) => sortSizes([...s, ...more.map((x) => x.trim()).filter(Boolean)]));
@@ -218,6 +230,33 @@ export function VariantGrid({
           </table>
         </div>
       )}
+
+      <div>
+        <label htmlFor={`${uid}-main`} className="field-label">
+          Cor principal (a que aparece primeiro na loja)
+        </label>
+        <select
+          id={`${uid}-main`}
+          name="defaultColorId"
+          value={mainValue}
+          onChange={(e) => setMain(e.target.value)}
+          aria-invalid={mainColorError ? true : undefined}
+          aria-describedby={mainColorError ? `${uid}-main-error` : undefined}
+          className="field !w-64 aria-[invalid=true]:!border-signal"
+        >
+          <option value="">{mainOptions.length ? "A primeira da lista de cores" : "Preencha a grade primeiro"}</option>
+          {mainOptions.map((id) => (
+            <option key={id} value={id}>
+              {byId.get(id)?.label ?? "Cor removida"}
+            </option>
+          ))}
+        </select>
+        {mainColorError && (
+          <p id={`${uid}-main-error`} className="mt-1 text-xs font-semibold text-signal">
+            {mainColorError}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

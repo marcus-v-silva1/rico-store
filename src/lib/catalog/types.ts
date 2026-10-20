@@ -18,7 +18,7 @@ export type CatalogProduct = {
   isNew: boolean;
   garment: GarmentKind;
   categorySlug: string;
-  /** Só cores com alguma variante ativa com estoque, por sort_order. */
+  /** Só cores com alguma variante ativa com estoque: a cor principal primeiro, depois por sort_order. */
   colors: CatalogColor[];
   /** Por sort_order. */
   images: CatalogImage[];
@@ -36,10 +36,12 @@ export type ProductRow = {
   is_new: boolean;
   garment: GarmentKind;
   category: { slug: string } | null;
+  default_color_id: string | null;
   variants: {
     stock: number;
     active: boolean;
     color: {
+      id: string;
       slug: string;
       label: string;
       hex: string;

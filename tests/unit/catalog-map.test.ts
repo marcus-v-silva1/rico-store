@@ -15,6 +15,7 @@ function v(
     stock,
     active: o.active ?? true,
     color: {
+      id: "id-" + slug,
       slug,
       label: slug,
       hex: "#000000",
@@ -34,6 +35,7 @@ function row(o: Partial<ProductRow> = {}): ProductRow {
     is_new: false,
     garment: "tee",
     category: { slug: "camisetas" },
+    default_color_id: null,
     variants: [],
     images: [],
     ...o,
@@ -72,6 +74,33 @@ describe("mapProductRow", () => {
       { url: "https://cdn/a/0.webp", alt: "a", colorSlug: "preto" },
       { url: "https://cdn/a/1.webp", alt: "b", colorSlug: null },
     ]);
+  });
+
+  it("a cor principal vem primeiro e o resto segue sort_order", () => {
+    const p = mapProductRow(
+      row({
+        default_color_id: "id-cinza",
+        variants: [v("preto", 1, { sort: 1 }), v("vinho", 1, { sort: 5 }), v("cinza", 1, { sort: 3 })],
+      }),
+      url,
+    );
+    expect(p.colors.map((c) => c.slug)).toEqual(["cinza", "preto", "vinho"]);
+  });
+
+  it("cor principal sem estoque ou desativada não entra; vale a ordem normal", () => {
+    const semEstoque = mapProductRow(
+      row({ default_color_id: "id-cinza", variants: [v("preto", 1, { sort: 1 }), v("cinza", 0, { sort: 3 })] }),
+      url,
+    );
+    expect(semEstoque.colors.map((c) => c.slug)).toEqual(["preto"]);
+    const desativada = mapProductRow(
+      row({
+        default_color_id: "id-cinza",
+        variants: [v("azul", 1, { sort: 6 }), v("cinza", 1, { sort: 3, colorActive: false })],
+      }),
+      url,
+    );
+    expect(desativada.colors.map((c) => c.slug)).toEqual(["azul"]);
   });
 
   it("cor repetida em vários tamanhos aparece uma vez", () => {

@@ -51,11 +51,14 @@ create table public.products (
   is_new boolean not null default false,
   garment public.garment_kind not null,
   status public.product_status not null default 'rascunho',
+  -- Cor que a vitrine mostra primeiro (desenho e rótulo do card). Sem ela, vale a ordem das cores.
+  default_color_id uuid references public.colors (id) on delete set null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
 create index products_category_id_idx on public.products (category_id);
+create index products_default_color_id_idx on public.products (default_color_id);
 
 create table public.product_collections (
   product_id uuid not null references public.products (id) on delete cascade,
@@ -264,7 +267,8 @@ begin
 
   if v_id is null then
     insert into public.products (
-      slug, name, detail, description, category_id, price_cents, weight_grams, is_new, garment, status
+      slug, name, detail, description, category_id, price_cents, weight_grams, is_new, garment, status,
+      default_color_id
     ) values (
       p ->> 'slug',
       p ->> 'name',
@@ -275,7 +279,8 @@ begin
       coalesce((p ->> 'weight_grams')::integer, 300),
       coalesce((p ->> 'is_new')::boolean, false),
       (p ->> 'garment')::public.garment_kind,
-      coalesce((p ->> 'status')::public.product_status, 'rascunho')
+      coalesce((p ->> 'status')::public.product_status, 'rascunho'),
+      nullif(p ->> 'default_color_id', '')::uuid
     )
     returning id into v_id;
   else
@@ -290,6 +295,7 @@ begin
       is_new = coalesce((p ->> 'is_new')::boolean, false),
       garment = (p ->> 'garment')::public.garment_kind,
       status = coalesce((p ->> 'status')::public.product_status, 'rascunho'),
+      default_color_id = nullif(p ->> 'default_color_id', '')::uuid,
       updated_at = now()
     where id = v_id;
     if not found then

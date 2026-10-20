@@ -268,7 +268,13 @@ export function ProductForm({
           Variantes
         </h2>
         <p className="mb-4 text-sm text-stone">Digite o estoque de cada cor e tamanho. 0 = sem estoque agora.</p>
-        <VariantGrid colors={colors} initial={grid} productSlug={slug} errors={state.cellErrors ?? []} />
+        <VariantGrid
+          colors={colors}
+          initial={grid}
+          productSlug={slug}
+          errors={state.cellErrors ?? []}
+          mainColorError={fe.defaultColorId}
+        />
       </section>
 
       <div className="flex flex-wrap items-center gap-3">

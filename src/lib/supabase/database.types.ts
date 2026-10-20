@@ -271,6 +271,7 @@ export type Database = {
         Row: {
           category_id: string;
           created_at: string;
+          default_color_id: string | null;
           description: string;
           detail: string;
           garment: Database["public"]["Enums"]["garment_kind"];
@@ -287,6 +288,7 @@ export type Database = {
         Insert: {
           category_id: string;
           created_at?: string;
+          default_color_id?: string | null;
           description?: string;
           detail?: string;
           garment: Database["public"]["Enums"]["garment_kind"];
@@ -302,6 +304,7 @@ export type Database = {
         Update: {
           category_id?: string;
           created_at?: string;
+          default_color_id?: string | null;
           description?: string;
           detail?: string;
           garment?: Database["public"]["Enums"]["garment_kind"];
@@ -320,6 +323,13 @@ export type Database = {
             columns: ["category_id"];
             isOneToOne: false;
             referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "products_default_color_id_fkey";
+            columns: ["default_color_id"];
+            isOneToOne: false;
+            referencedRelation: "colors";
             referencedColumns: ["id"];
           },
         ];

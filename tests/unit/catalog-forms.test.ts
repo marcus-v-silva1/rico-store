@@ -20,6 +20,7 @@ const validProduct = {
   garment: "tee",
   status: "rascunho",
   collectionIds: [],
+  defaultColorId: null,
 };
 
 describe("slug e sku", () => {
@@ -104,6 +105,11 @@ describe("schemas", () => {
     expect(productFormSchema.safeParse(validProduct).success).toBe(true);
     expect(productFormSchema.safeParse({ ...validProduct, priceCents: 0 }).success).toBe(false);
     expect(productFormSchema.safeParse({ ...validProduct, slug: "Com Espaço" }).success).toBe(false);
+  });
+  it("cor principal é opcional, mas tem de ser um id válido", () => {
+    const id = "6a1d3c2b-8e4f-4a7b-9c0d-1e2f3a4b5c6d";
+    expect(productFormSchema.safeParse({ ...validProduct, defaultColorId: id }).success).toBe(true);
+    expect(productFormSchema.safeParse({ ...validProduct, defaultColorId: "preto" }).success).toBe(false);
   });
   it("cor converte hex para minúsculas", () => {
     expect(colorFormSchema.safeParse({ slug: "grafite", label: "Grafite", hex: "#2A2A2A" }).data?.hex).toBe("#2a2a2a");

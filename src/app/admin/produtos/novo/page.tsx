@@ -27,7 +27,7 @@ async function NewProduct() {
       </p>
     );
   }
-  return <ProductForm {...options} grid={{ colorIds: [], sizes: [], stock: {} }} />;
+  return <ProductForm {...options} grid={{ colorIds: [], sizes: [], stock: {}, defaultColorId: null }} />;
 }
 
 export default function NewProductPage() {

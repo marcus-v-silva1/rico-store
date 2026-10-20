@@ -98,6 +98,7 @@ describe("grade do formulário", () => {
       garment: "tee",
       status: "outro",
       collectionIds: [],
+      defaultColorId: "nao-e-id",
     });
     expect(parsed.success).toBe(false);
     if (parsed.success) return;
@@ -108,6 +109,7 @@ describe("grade do formulário", () => {
       price: "Use um valor como 129,90.",
       weightGrams: "Use o peso em gramas, um número inteiro maior que zero.",
       status: "Escolha uma situação.",
+      defaultColorId: "Escolha uma cor que está na grade.",
     });
   });
 });

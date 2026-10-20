@@ -45,6 +45,7 @@ export async function saveProduct(_prev: ProductFormState, formData: FormData): 
     garment: text(formData, "garment"),
     status: text(formData, "status"),
     collectionIds: formData.getAll("collectionIds").filter((v): v is string => typeof v === "string"),
+    defaultColorId: text(formData, "defaultColorId") || null,
   });
 
   const cells = readGridCells(formData.entries());
@@ -55,6 +56,10 @@ export async function saveProduct(_prev: ProductFormState, formData: FormData): 
 
   const data = parsed.data;
   const variants = grid.variants;
+
+  // A cor principal tem de ser uma das cores da grade.
+  if (data.defaultColorId && !variants.some((v) => v.colorId === data.defaultColorId))
+    return { error: CHECK_FIELDS, fieldErrors: { defaultColorId: "Escolha uma cor que está na grade." } };
 
   // O SKU usa o endereço da cor; uma cor apagada ou desconhecida derruba o envio.
   const colorIds = [...new Set(variants.map((v) => v.colorId))];
@@ -108,6 +113,7 @@ export async function saveProduct(_prev: ProductFormState, formData: FormData): 
       garment: data.garment,
       status: data.status,
       collection_ids: [...new Set(data.collectionIds)],
+      default_color_id: data.defaultColorId,
       variants: variants.map((v) => ({
         color_id: v.colorId,
         size: v.size,

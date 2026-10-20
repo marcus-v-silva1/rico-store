@@ -66,6 +66,7 @@ const FIXED: Record<string, string> = {
   garment: "Escolha um desenho.",
   status: "Escolha uma situação.",
   collectionIds: "Escolha coleções da lista.",
+  defaultColorId: "Escolha uma cor que está na grade.",
 };
 
 /** Erros do zod em português, um por campo (os padrão vêm em inglês). */

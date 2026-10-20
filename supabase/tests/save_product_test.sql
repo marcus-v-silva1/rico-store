@@ -1,5 +1,5 @@
 begin;
-select plan(9);
+select plan(11);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000a1', 'admin@teste.com'),
@@ -36,6 +36,10 @@ insert into saved select public.admin_save_product(body) from payloads where nam
 
 select isnt((select id from saved), null, 'devolve um uuid');
 select is((select count(*) from public.product_variants where product_id = (select id from saved)), 2::bigint, 'cria 2 variantes');
+select is(
+  (select default_color_id from public.products where id = (select id from saved)), null::uuid,
+  'sem cor principal no payload, fica sem'
+);
 
 -- Segunda gravação: só preto/M, estoque 5, e coleção B.
 select lives_ok(
@@ -43,6 +47,7 @@ select lives_ok(
       (select body from payloads where name = 'v1')
       || jsonb_build_object(
            'id', (select id from saved),
+           'default_color_id', '00000000-0000-0000-0000-0000000000d1',
            'collection_ids', jsonb_build_array('00000000-0000-0000-0000-0000000000e2'),
            'variants', jsonb_build_array(jsonb_build_object(
              'color_id', '00000000-0000-0000-0000-0000000000d1', 'size', 'M', 'sku', 'CX-P-M', 'stock', 5))))$$,
@@ -51,6 +56,10 @@ select lives_ok(
 select is(
   (select stock::text || active::text from public.product_variants where product_id = (select id from saved) and size = 'M'),
   '5true', 'preto/M com estoque 5 e ativa'
+);
+select is(
+  (select default_color_id from public.products where id = (select id from saved)),
+  '00000000-0000-0000-0000-0000000000d1'::uuid, 'grava a cor principal'
 );
 select is(
   (select active from public.product_variants where product_id = (select id from saved) and size = 'G'),

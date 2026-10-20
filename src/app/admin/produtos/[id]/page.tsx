@@ -23,7 +23,7 @@ async function EditProduct({ params }: { params: Promise<{ id: string }> }) {
     supabase
       .from("products")
       .select(
-        `id, slug, name, detail, description, category_id, price_cents, weight_grams, is_new, garment, status,
+        `id, slug, name, detail, description, category_id, price_cents, weight_grams, is_new, garment, status, default_color_id,
          product_collections(collection_id),
          variants:product_variants(color_id, size, stock, active)`,
       )
@@ -77,7 +77,7 @@ async function EditProduct({ params }: { params: Promise<{ id: string }> }) {
           status: p.status,
           collectionIds: p.product_collections.map((c) => c.collection_id),
         }}
-        grid={{ colorIds, sizes: active.map((v) => v.size), stock }}
+        grid={{ colorIds, sizes: active.map((v) => v.size), stock, defaultColorId: p.default_color_id }}
       />
       <Photos
         productId={p.id}

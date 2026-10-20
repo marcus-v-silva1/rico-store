@@ -19,9 +19,9 @@ export type CatalogPage = {
 
 // Formato de ProductRow. `!inner` na categoria permite filtrar as inativas.
 const PRODUCT_SELECT = `
-  id, slug, name, detail, price_cents, is_new, garment,
+  id, slug, name, detail, price_cents, is_new, garment, default_color_id,
   category:categories!inner(slug, active),
-  variants:product_variants(stock, active, color:colors(slug, label, hex, sort_order, active)),
+  variants:product_variants(stock, active, color:colors(id, slug, label, hex, sort_order, active)),
   images:product_images(path, alt, sort_order, color:colors(slug))
 `;
 

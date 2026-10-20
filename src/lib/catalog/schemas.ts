@@ -18,6 +18,8 @@ export const productFormSchema = z.object({
   garment: z.enum(GARMENT_KINDS),
   status: z.enum(PRODUCT_STATUSES),
   collectionIds: z.array(z.uuid()),
+  /** Cor que o card mostra primeiro; `null` = segue a ordem das cores. */
+  defaultColorId: z.uuid().nullable(),
 });
 
 /** Preço digitado em reais ("129,90", "129.9", "129") vira centavos. Qualquer outra coisa: `null`. */
