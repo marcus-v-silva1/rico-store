@@ -1,4 +1,4 @@
-import type { GarmentKind } from "@/content/catalog";
+import type { GarmentKind } from "@/lib/catalog/types";
 
 // Silhuetas planas das peças, no estilo do layout: forma cheia + costuras em traço fino.
 // Servem de foto provisória até o catálogo ter fotografia real.

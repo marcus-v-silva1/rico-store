@@ -1,4 +1,3 @@
-import { HOME_CATEGORIES, PRODUCTS, getCollection } from "@/content/catalog";
 import { isPlaceholder, SITE, BRANDS } from "@/content/site";
 import { Garment } from "@/components/garment";
 import { Marquee } from "@/components/marquee";
@@ -7,17 +6,17 @@ import { PageTransition } from "@/components/page-transition";
 import { Photo } from "@/components/photo";
 import { ProductCard } from "@/components/product-card";
 import { LinkButton } from "@/components/ui/button";
+import { getFeaturedProducts, getHomeCategories } from "@/lib/catalog/queries";
 
 const container = "mx-auto max-w-[88rem] px-(--gutter)";
-
-// Novidades primeiro, sem perder a ordem do catálogo
-const FEATURED = [...PRODUCTS].sort((a, b) => Number(b.isNew) - Number(a.isNew)).slice(0, 8);
 
 const instagramUrl = isPlaceholder(SITE.instagram)
   ? "https://www.instagram.com/"
   : `https://www.instagram.com/${SITE.instagram}`;
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Leituras em cache: entram no shell estático da home.
+  const [categories, featured] = await Promise.all([getHomeCategories(), getFeaturedProducts(8)]);
   return (
     <PageTransition>
       {/* Hero ---------------------------------------------------------------- */}
@@ -67,24 +66,21 @@ export default function HomePage() {
           Comprar por categoria
         </h2>
         <ul className="rail mt-6">
-          {HOME_CATEGORIES.map(({ slug, garment }) => {
-            const c = getCollection(slug)!;
-            return (
-              <li key={slug}>
-                <NavLink href={`/colecao/${slug}`} className="group block">
-                  <div className="grid aspect-[4/5] place-items-center bg-concrete">
-                    <Garment
-                      kind={garment}
-                      color={garment === "tee" ? "#f6f5f1" : "#121212"}
-                      className="size-[62%] transition-transform duration-500 ease-out group-hover:scale-105"
-                    />
-                  </div>
-                  <p className="mt-3 text-[0.8125rem] font-semibold">{c.title}</p>
-                  <p className="label mt-1 text-[0.625rem] text-stone">{c.kicker}</p>
-                </NavLink>
-              </li>
-            );
-          })}
+          {categories.map(({ slug, name, kicker, garment }) => (
+            <li key={slug}>
+              <NavLink href={`/categoria/${slug}`} className="group block">
+                <div className="grid aspect-[4/5] place-items-center bg-concrete">
+                  <Garment
+                    kind={garment}
+                    color={garment === "tee" ? "#f6f5f1" : "#121212"}
+                    className="size-[62%] transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
+                </div>
+                <p className="mt-3 text-[0.8125rem] font-semibold">{name}</p>
+                <p className="label mt-1 text-[0.625rem] text-stone">{kicker}</p>
+              </NavLink>
+            </li>
+          ))}
         </ul>
       </section>
 
@@ -102,7 +98,7 @@ export default function HomePage() {
           </NavLink>
         </div>
         <ul className="rail mt-6 lg:gap-y-10">
-          {FEATURED.map((product) => (
+          {featured.map((product) => (
             <li key={product.slug}>
               <ProductCard product={product} />
             </li>

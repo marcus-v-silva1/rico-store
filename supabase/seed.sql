@@ -4,7 +4,7 @@
 -- update public.profiles set role = 'admin' where email = 'voce@exemplo.com';
 
 -- ---------------------------------------------------------------------------
--- Catálogo inicial (espelha src/content/catalog.ts)
+-- Catálogo inicial: as 12 peças da primeira vitrine
 -- ---------------------------------------------------------------------------
 insert into public.colors (slug, label, hex, sort_order) values
   ('preto',  'Preto',  '#121212', 1),

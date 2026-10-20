@@ -54,9 +54,10 @@ Em produção, aplique as migrations (`supabase db push`) e, em _Authentication 
 ## Estrutura
 
 ```
-src/app/            páginas: vitrine, /colecao/[slug], login, cadastro, conta, atendimento, admin
+src/app/            páginas: vitrine, /colecao/[slug], /categoria/[slug], login, cadastro, conta, atendimento, admin
 src/components/     cabeçalho, rodapé, cartão de produto, logo, transição
-src/content/        loja (site.ts) e catálogo de exemplo (catalog.ts)
+src/content/        dados da loja (site.ts)
+src/lib/catalog/    catálogo: leituras do banco (queries.ts) e regras puras
 src/lib/roles.ts    regras de papéis (puro, testado)
 supabase/migrations tabelas, RLS e gatilhos
 docs/identidade-visual.md
@@ -65,12 +66,12 @@ docs/identidade-visual.md
 ## Antes de publicar
 
 - Preencher endereço, horário, WhatsApp e Instagram em `src/content/site.ts` (hoje entre colchetes, como no layout).
-- Trocar os preços de exemplo e as fotos provisórias (`public/images/` + `<Photo src>`).
+- Trocar os preços de exemplo do catálogo e as fotos provisórias (`public/images/` + `<Photo src>`).
 - Escolher as fontes finais, se a marca tiver as suas.
 
 ## Próximos passos
 
-Catálogo e estoque no banco (hoje é `src/content/catalog.ts`), página de produto, sacola com checkout (hoje a sacola só conta peças no navegador), fila de atendimento com conversas, busca e as páginas de ajuda do rodapé.
+Painel do catálogo, página de produto, sacola com checkout (hoje a sacola só conta peças no navegador), fila de atendimento com conversas, busca e as páginas de ajuda do rodapé.
 
 ## Comandos
 

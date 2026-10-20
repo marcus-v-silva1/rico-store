@@ -1,9 +1,8 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { ColorId } from "@/content/catalog";
 
-export type CartItem = { slug: string; color: ColorId; qty: number };
+export type CartItem = { slug: string; color: string; qty: number };
 
 // Sacola mínima no navegador. Quando o checkout existir, ela passa a vir do banco.
 const KEY = "rico-sacola";
@@ -36,11 +35,13 @@ function commit(next: readonly CartItem[]) {
   listeners.forEach((l) => l());
 }
 
-export function addToCart(slug: string, color: ColorId) {
+export function addToCart(slug: string, colorSlug: string) {
   const current = snapshot();
-  const found = current.find((i) => i.slug === slug && i.color === color);
+  const found = current.find((i) => i.slug === slug && i.color === colorSlug);
   commit(
-    found ? current.map((i) => (i === found ? { ...i, qty: i.qty + 1 } : i)) : [...current, { slug, color, qty: 1 }],
+    found
+      ? current.map((i) => (i === found ? { ...i, qty: i.qty + 1 } : i))
+      : [...current, { slug, color: colorSlug, qty: 1 }],
   );
 }
 

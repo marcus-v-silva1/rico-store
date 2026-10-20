@@ -1,5 +1,5 @@
-import { COLLECTIONS, NAV_SLUGS } from "@/content/catalog";
 import { FOOTER_LINKS, SITE } from "@/content/site";
+import { getNavCollections } from "@/lib/catalog/queries";
 import { Logo } from "./brand";
 import { NavLink } from "./nav-link";
 import { NewsletterForm } from "./newsletter-form";
@@ -7,7 +7,8 @@ import { NewsletterForm } from "./newsletter-form";
 const linkClass = "text-[0.8125rem] text-bone hover:underline underline-offset-4";
 const colTitle = "mb-4 text-xs text-bone/60";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const navItems = await getNavCollections();
   return (
     <footer className="bg-ink text-bone">
       <div className="mx-auto max-w-[88rem] px-(--gutter) pt-16 pb-6">
@@ -22,10 +23,10 @@ export function SiteFooter() {
           <nav aria-label="Comprar">
             <h2 className={colTitle}>Comprar</h2>
             <ul className="space-y-3">
-              {NAV_SLUGS.map((slug) => (
-                <li key={slug}>
-                  <NavLink href={`/colecao/${slug}`} className={linkClass}>
-                    {COLLECTIONS.find((c) => c.slug === slug)!.title}
+              {navItems.map((item) => (
+                <li key={item.slug}>
+                  <NavLink href={`/colecao/${item.slug}`} className={linkClass}>
+                    {item.title}
                   </NavLink>
                 </li>
               ))}

@@ -140,7 +140,9 @@ export async function getCategoryPage(slug: string): Promise<CatalogPage | null>
   };
 }
 
-export async function getHomeCategories(): Promise<{ slug: string; name: string; garment: GarmentKind }[]> {
+export async function getHomeCategories(): Promise<
+  { slug: string; name: string; kicker: string; garment: GarmentKind }[]
+> {
   "use cache";
   cacheTag(CATALOG_TAG);
   cacheLife("hours");
@@ -148,7 +150,7 @@ export async function getHomeCategories(): Promise<{ slug: string; name: string;
 
   const { data, error } = await createPublicClient()
     .from("categories")
-    .select("slug, name, garment")
+    .select("slug, name, kicker, garment")
     .eq("active", true)
     .eq("show_on_home", true)
     .order("sort_order");
