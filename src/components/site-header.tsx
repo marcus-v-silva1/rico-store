@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { getViewer } from "@/lib/auth";
-import { getNavCollections } from "@/lib/catalog/queries";
+import { getNavCollections, type NavItem } from "@/lib/catalog/queries";
 import { homeFor } from "@/lib/roles";
 import { Logo } from "./brand";
 import { CartCount } from "./cart-count";
@@ -24,7 +24,13 @@ async function AccountLink() {
 
 // O menu vem do banco em cache: entra no shell estático.
 export async function SiteHeader() {
-  const navItems = await getNavCollections();
+  // Fora do cache: uma falha do banco vira menu vazio em vez de derrubar todas as páginas.
+  let navItems: NavItem[] = [];
+  try {
+    navItems = await getNavCollections();
+  } catch (error) {
+    console.error(error);
+  }
   const navFallback = <MainNavFallback items={navItems} />;
   return (
     // viewTransitionName ancora o cabeçalho: só o conteúdo desliza entre páginas.

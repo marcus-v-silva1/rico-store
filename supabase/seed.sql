@@ -28,25 +28,27 @@ insert into public.categories (slug, name, kicker, description, garment, show_on
   ('sneakers', 'Sneakers', 'Nike / New Balance / Jordan', 'Tênis para completar o look, dos clássicos aos lançamentos.', 'sneaker', true, 4),
   ('acessorios', 'Acessórios', 'Bonés / bolsas / detalhes', 'O detalhe que fecha o visual.', 'cap', false, 5);
 
--- slug, nome, detalhe, linha, categoria, peça, cores, preço (centavos), novo
+-- slug, nome, detalhe, linha, categoria, peça, cores, preço (centavos), novo, posição
+-- A posição escalona created_at: a primeira peça é a mais recente (ordem das Novidades).
 create temp table seed_products on commit drop as
 select * from (values
-  ('jaqueta-puffer',      'Jaqueta puffer',      'Preto',          'street',   'moletons-e-jaquetas', 'jacket',  array['preto','oliva','cinza'],  52990, true),
-  ('moletom-com-capuz',   'Moletom com capuz',   'Cinza mescla',   'street',   'moletons-e-jaquetas', 'hoodie',  array['cinza','preto','vinho'],  32990, false),
-  ('camiseta-oversized',  'Camiseta oversized',  'Branco',         'casual',   'camisetas',           'tee',     array['branco','preto'],         12990, true),
-  ('calca-cargo-baggy',   'Calça cargo baggy',   'Oliva',          'street',   'calcas-e-bermudas',   'pants',   array['oliva','preto'],          27990, true),
-  ('corta-vento',         'Corta-vento',         'Preto e cinza',  'street',   'moletons-e-jaquetas', 'jacket',  array['preto','cinza'],          29990, false),
-  ('bermuda-de-nylon',    'Bermuda de nylon',    'Preto',          'casual',   'calcas-e-bermudas',   'shorts',  array['preto','azul'],           17990, false),
-  ('bone-aba-curva',      'Boné aba curva',      'Preto',          'casual',   'acessorios',          'cap',     array['preto','branco'],          9990, false),
-  ('tenis-cano-baixo',    'Tênis cano baixo',    'Branco e preto', 'street',   'sneakers',            'sneaker', array['branco','preto'],         49990, false),
-  ('jaqueta-workwear',    'Jaqueta workwear',    'Preto',          'trabalho', 'moletons-e-jaquetas', 'jacket',  array['preto','oliva'],          34990, true),
-  ('calca-dupla-costura', 'Calça dupla costura', 'Preto',          'trabalho', 'calcas-e-bermudas',   'pants',   array['preto','oliva','cinza'],  25990, false),
-  ('camiseta-pesada',     'Camiseta pesada',     'Cinza',          'trabalho', 'camisetas',           'tee',     array['cinza','preto','branco'], 11990, false),
-  ('bolsa-transversal',   'Bolsa transversal',   'Preto',          'street',   'acessorios',          'bag',     array['preto'],                  15990, false)
-) as t (slug, name, detail, line, category, garment, colors, price_cents, is_new);
+  ('jaqueta-puffer',      'Jaqueta puffer',      'Preto',          'street',   'moletons-e-jaquetas', 'jacket',  array['preto','oliva','cinza'],  52990, true,   1),
+  ('moletom-com-capuz',   'Moletom com capuz',   'Cinza mescla',   'street',   'moletons-e-jaquetas', 'hoodie',  array['cinza','preto','vinho'],  32990, false,  2),
+  ('camiseta-oversized',  'Camiseta oversized',  'Branco',         'casual',   'camisetas',           'tee',     array['branco','preto'],         12990, true,   3),
+  ('calca-cargo-baggy',   'Calça cargo baggy',   'Oliva',          'street',   'calcas-e-bermudas',   'pants',   array['oliva','preto'],          27990, true,   4),
+  ('corta-vento',         'Corta-vento',         'Preto e cinza',  'street',   'moletons-e-jaquetas', 'jacket',  array['preto','cinza'],          29990, false,  5),
+  ('bermuda-de-nylon',    'Bermuda de nylon',    'Preto',          'casual',   'calcas-e-bermudas',   'shorts',  array['preto','azul'],           17990, false,  6),
+  ('bone-aba-curva',      'Boné aba curva',      'Preto',          'casual',   'acessorios',          'cap',     array['preto','branco'],          9990, false,  7),
+  ('tenis-cano-baixo',    'Tênis cano baixo',    'Branco e preto', 'street',   'sneakers',            'sneaker', array['branco','preto'],         49990, false,  8),
+  ('jaqueta-workwear',    'Jaqueta workwear',    'Preto',          'trabalho', 'moletons-e-jaquetas', 'jacket',  array['preto','oliva'],          34990, true,   9),
+  ('calca-dupla-costura', 'Calça dupla costura', 'Preto',          'trabalho', 'calcas-e-bermudas',   'pants',   array['preto','oliva','cinza'],  25990, false, 10),
+  ('camiseta-pesada',     'Camiseta pesada',     'Cinza',          'trabalho', 'camisetas',           'tee',     array['cinza','preto','branco'], 11990, false, 11),
+  ('bolsa-transversal',   'Bolsa transversal',   'Preto',          'street',   'acessorios',          'bag',     array['preto'],                  15990, false, 12)
+) as t (slug, name, detail, line, category, garment, colors, price_cents, is_new, pos);
 
-insert into public.products (slug, name, detail, category_id, price_cents, is_new, garment, status)
-select s.slug, s.name, s.detail, c.id, s.price_cents, s.is_new, s.garment::public.garment_kind, 'ativo'
+insert into public.products (slug, name, detail, category_id, price_cents, is_new, garment, status, created_at)
+select s.slug, s.name, s.detail, c.id, s.price_cents, s.is_new, s.garment::public.garment_kind, 'ativo',
+  now() - s.pos * interval '1 minute'
 from seed_products s
 join public.categories c on c.slug = s.category;
 

@@ -1,5 +1,5 @@
 import { FOOTER_LINKS, SITE } from "@/content/site";
-import { getNavCollections } from "@/lib/catalog/queries";
+import { getNavCollections, type NavItem } from "@/lib/catalog/queries";
 import { Logo } from "./brand";
 import { NavLink } from "./nav-link";
 import { NewsletterForm } from "./newsletter-form";
@@ -8,7 +8,13 @@ const linkClass = "text-[0.8125rem] text-bone hover:underline underline-offset-4
 const colTitle = "mb-4 text-xs text-bone/60";
 
 export async function SiteFooter() {
-  const navItems = await getNavCollections();
+  // Fora do cache: uma falha do banco vira menu vazio em vez de derrubar todas as páginas.
+  let navItems: NavItem[] = [];
+  try {
+    navItems = await getNavCollections();
+  } catch (error) {
+    console.error(error);
+  }
   return (
     <footer className="bg-ink text-bone">
       <div className="mx-auto max-w-[88rem] px-(--gutter) pt-16 pb-6">
