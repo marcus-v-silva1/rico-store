@@ -20,6 +20,14 @@ export const productFormSchema = z.object({
   collectionIds: z.array(z.uuid()),
 });
 
+/** Preço digitado em reais ("129,90", "129.9", "129") vira centavos. Qualquer outra coisa: `null`. */
+export function parsePriceToCents(text: string): number | null {
+  const match = /^(\d{1,7})(?:[.,](\d{1,2}))?$/.exec(text.trim());
+  if (!match) return null;
+  const cents = Number(match[1]) * 100 + Number((match[2] ?? "").padEnd(2, "0"));
+  return cents > 0 ? cents : null;
+}
+
 export const categoryFormSchema = z.object({
   name: z.string().trim().min(2).max(60),
   slug,

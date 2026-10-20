@@ -1,4 +1,4 @@
-import type { GarmentKind } from "@/lib/catalog/types";
+import type { GarmentKind, ProductStatus } from "@/lib/catalog/types";
 
 export const GARMENT_LABEL: Record<GarmentKind, string> = {
   jacket: "Jaqueta",
@@ -9,4 +9,10 @@ export const GARMENT_LABEL: Record<GarmentKind, string> = {
   cap: "Boné",
   sneaker: "Tênis",
   bag: "Bolsa",
+};
+
+export const STATUS_LABEL: Record<ProductStatus, string> = {
+  rascunho: "Rascunho",
+  ativo: "Ativo",
+  arquivado: "Arquivado",
 };
