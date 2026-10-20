@@ -3,7 +3,8 @@ import { getViewer } from "@/lib/auth";
 import { getNavCollections, type NavItem } from "@/lib/catalog/queries";
 import { homeFor } from "@/lib/roles";
 import { Logo } from "./brand";
-import { CartCount } from "./cart-count";
+import { CartButton } from "./cart-button";
+import { HeaderShell } from "./header-shell";
 import { MainNav, MainNavFallback } from "./main-nav";
 import { NavLink } from "./nav-link";
 
@@ -33,8 +34,7 @@ export async function SiteHeader() {
   }
   const navFallback = <MainNavFallback items={navItems} />;
   return (
-    // viewTransitionName ancora o cabeçalho: só o conteúdo desliza entre páginas.
-    <header className="sticky top-0 z-40 bg-ink text-bone" style={{ viewTransitionName: "site-header" }}>
+    <HeaderShell>
       <div className="mx-auto grid max-w-[88rem] grid-cols-[1fr_auto] items-center gap-x-4 px-(--gutter) py-3 lg:grid-cols-[1fr_auto_1fr] lg:py-0">
         <div className="hidden lg:block">
           <Suspense fallback={navFallback}>
@@ -55,9 +55,7 @@ export async function SiteHeader() {
           <Suspense fallback={<span className={accountClass}>Entrar</span>}>
             <AccountLink />
           </Suspense>
-          <span className="text-[0.8125rem] font-semibold whitespace-nowrap">
-            Sacola (<CartCount />)
-          </span>
+          <CartButton />
         </div>
       </div>
 
@@ -70,6 +68,6 @@ export async function SiteHeader() {
         </div>
       </div>
       <div className="border-b border-smoke" aria-hidden="true" />
-    </header>
+    </HeaderShell>
   );
 }

@@ -177,6 +177,23 @@ export async function getFeaturedProducts(limit = 8): Promise<CatalogProduct[]> 
   return toProducts(data);
 }
 
+/** Todas as peças à venda: a sacola confere nome, preço e cor por aqui. */
+export async function getCartCatalog(): Promise<CatalogProduct[]> {
+  "use cache";
+  cacheTag(CATALOG_TAG);
+  cacheLife("hours");
+  if (!isSupabaseConfigured()) return [];
+
+  const { data, error } = await createPublicClient()
+    .from("products")
+    .select(PRODUCT_SELECT)
+    .eq("status", "ativo")
+    .eq("category.active", true)
+    .order("slug");
+  if (error) fail("as peças da sacola", error);
+  return toProducts(data);
+}
+
 export async function getCollectionSlugs(): Promise<string[]> {
   "use cache";
   cacheTag(CATALOG_TAG);

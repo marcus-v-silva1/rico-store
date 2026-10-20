@@ -1,8 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { Archivo, JetBrains_Mono, Reenie_Beanie } from "next/font/google";
+import { CartCatalogProvider } from "@/components/cart-catalog";
+import { CartDrawer } from "@/components/cart-drawer";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { SITE } from "@/content/site";
+import { getCartCatalog } from "@/lib/catalog/queries";
+import type { CatalogProduct } from "@/lib/catalog/types";
 import "./globals.css";
 
 // Archivo tem eixo de largura: o mesmo arquivo serve o texto (100) e os títulos largos (125).
@@ -39,13 +44,29 @@ export const viewport: Viewport = {
   themeColor: "#0f0f0f",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+/** Se o banco cair, a sacola fica vazia em vez de derrubar o site inteiro. */
+async function loadCartCatalog(): Promise<CatalogProduct[]> {
+  try {
+    return await getCartCatalog();
+  } catch (error) {
+    console.error("Sacola sem catálogo:", error);
+    return [];
+  }
+}
+
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const products = await loadCartCatalog();
   return (
     <html lang="pt-BR" className={`${archivo.variable} ${mono.variable} ${script.variable}`}>
       <body className="flex min-h-dvh flex-col">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <SmoothScroll>
+          <CartCatalogProvider products={products}>
+            <SiteHeader />
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
+            <CartDrawer />
+          </CartCatalogProvider>
+        </SmoothScroll>
       </body>
     </html>
   );

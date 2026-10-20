@@ -8,6 +8,7 @@ Loja de streetwear em Belém. Vitrine com a identidade visual do layout, catálo
 - **TypeScript** e **Tailwind CSS 4**
 - **Supabase**: login, banco Postgres e RLS
 - **View Transitions** do React para a transição horizontal entre páginas
+- **motion**, **Lenis** e **Embla**: animações, rolagem suave e carrossel
 - **Vitest** para as regras de negócio
 
 ## Papéis
@@ -90,7 +91,7 @@ docs/identidade-visual.md
 
 ## Próximos passos
 
-Página de produto, sacola com checkout (hoje a sacola só conta peças no navegador), fila de atendimento com conversas, busca e as páginas de ajuda do rodapé.
+Página de produto, checkout (hoje a sacola vive no navegador e fecha o pedido pelo WhatsApp), fila de atendimento com conversas, busca e as páginas de ajuda do rodapé.
 
 ## Comandos
 

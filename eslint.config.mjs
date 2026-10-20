@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Worktrees das sessões do Claude ficam dentro do projeto e não são código desta árvore.
+    ".claude/**",
   ]),
 ]);
 
