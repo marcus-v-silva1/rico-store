@@ -83,13 +83,19 @@ describe("publicação e fotos", () => {
     ]);
     expect(publishProblems({ variants: [{ stock: 1 }], imageCount: 1 })).toEqual([]);
   });
-  it("checkImageFile e imagePath", () => {
+  it("checkImageFile", () => {
     expect(checkImageFile({ type: "image/webp", size: 1000 })).toBeNull();
     expect(checkImageFile({ type: "application/pdf", size: 1000 })).toBe("Envie uma foto em JPEG, PNG ou WebP.");
     expect(checkImageFile({ type: "image/png", size: 5 * 1024 * 1024 + 1 })).toBe(
       "A foto passa de 5 MB. Diminua e envie de novo.",
     );
-    expect(imagePath("p1", "Foto Final.JPG", "x9")).toBe("p1/x9.jpg");
+    expect(checkImageFile({ type: "image/jpeg", size: 0 })).toBe("Envie uma foto em JPEG, PNG ou WebP.");
+  });
+  it("imagePath usa a extensão do tipo do arquivo, não do nome", () => {
+    expect(imagePath("p1", "image/jpeg", "x9")).toBe("p1/x9.jpg");
+    expect(imagePath("p1", "image/png", "x9")).toBe("p1/x9.png");
+    expect(imagePath("p1", "image/webp", "x9")).toBe("p1/x9.webp");
+    expect(() => imagePath("p1", "application/pdf", "x9")).toThrow();
   });
 });
 

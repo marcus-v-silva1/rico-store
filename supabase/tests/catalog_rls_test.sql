@@ -1,5 +1,5 @@
 begin;
-select plan(12);
+select plan(14);
 
 -- Dois usuários: o gatilho cria os perfis de cliente; promovemos um a admin (sem auth.uid() a trava não se aplica).
 insert into auth.users (id, email) values
@@ -44,6 +44,10 @@ select results_eq(
   $$values (0::bigint)$$,
   'cliente não muda a ordem das categorias'
 );
+select throws_ok(
+  $$insert into storage.objects (bucket_id, name) values ('produtos', 'teste/cliente.jpg')$$,
+  '42501', null, 'cliente não envia foto para o bucket produtos'
+);
 
 -- Admin
 set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}';
@@ -61,6 +65,10 @@ select is((select count(*) from public.colors where slug = 'oculta'), 1::bigint,
 select is(
   (select count(*) from storage.objects where bucket_id = 'produtos' and name = 'teste/foto.jpg'), 1::bigint,
   'admin lê objetos do bucket produtos'
+);
+select lives_ok(
+  $$insert into storage.objects (bucket_id, name) values ('produtos', 'teste/admin.jpg')$$,
+  'admin envia foto para o bucket produtos'
 );
 
 select * from finish();

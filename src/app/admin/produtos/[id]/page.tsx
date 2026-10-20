@@ -4,8 +4,10 @@ import { AdminNav } from "@/components/admin-nav";
 import { NavLink } from "@/components/nav-link";
 import { Panel } from "@/components/panel";
 import { requireRole } from "@/lib/auth";
+import { productImageUrl } from "@/lib/catalog/queries";
 import { LOAD_ERROR, loadFormOptions } from "../form-options";
 import { ProductForm } from "../product-form";
+import { Photos } from "./photos";
 
 export const metadata: Metadata = { title: "Editar produto" };
 
@@ -27,7 +29,12 @@ async function EditProduct({ params }: { params: Promise<{ id: string }> }) {
       )
       .eq("id", id)
       .maybeSingle(),
-    supabase.from("product_images").select("id", { count: "exact", head: true }).eq("product_id", id),
+    supabase
+      .from("product_images")
+      .select("id, path, color_id, alt")
+      .eq("product_id", id)
+      .order("sort_order")
+      .order("created_at"),
   ]);
   const error = productRes.error ?? imagesRes.error;
   if (error) console.error("EditProduct: falha ao ler o produto", error);
@@ -45,12 +52,13 @@ async function EditProduct({ params }: { params: Promise<{ id: string }> }) {
   const active = p.variants.filter((v) => v.active);
   const colorIds = options.colors.map((c) => c.id).filter((c) => active.some((v) => v.color_id === c));
   const stock = Object.fromEntries(active.map((v) => [`${v.color_id}:${v.size}`, String(v.stock)]));
-  const photos = imagesRes.count ?? 0;
+  const photos = imagesRes.data ?? [];
+  const count = photos.length;
 
   return (
     <div className="space-y-6">
       <p className="text-sm text-stone">
-        {photos === 0 ? "Sem foto ainda." : photos === 1 ? "1 foto." : `${photos} fotos.`} Para publicar como
+        {count === 0 ? "Sem foto ainda." : count === 1 ? "1 foto." : `${count} fotos.`} Para publicar como
         &ldquo;Ativo&rdquo;, o produto precisa de pelo menos uma foto e estoque em uma cor e tamanho.
       </p>
       <ProductForm
@@ -70,6 +78,12 @@ async function EditProduct({ params }: { params: Promise<{ id: string }> }) {
           collectionIds: p.product_collections.map((c) => c.collection_id),
         }}
         grid={{ colorIds, sizes: active.map((v) => v.size), stock }}
+      />
+      <Photos
+        productId={p.id}
+        productName={p.name}
+        colors={options.colors}
+        photos={photos.map((i) => ({ id: i.id, url: productImageUrl(i.path), colorId: i.color_id, alt: i.alt }))}
       />
     </div>
   );

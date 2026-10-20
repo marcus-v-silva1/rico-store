@@ -1,9 +1,11 @@
 import Image from "next/image";
+import { isLoopbackUrl } from "@/lib/image-host";
 import { cn } from "@/lib/utils";
 
 /**
  * Foto do layout. Sem `src`, mostra um quadro provisório com o nome do slot:
- * coloque a imagem em `public/images/` e passe o caminho aqui.
+ * coloque a imagem em `public/images/` e passe o caminho aqui. Fotos do Supabase local
+ * vão sem otimização, porque o Next 16 recusa otimizar IP local.
  */
 export function Photo({
   src,
@@ -28,6 +30,7 @@ export function Photo({
           fill
           sizes="(min-width: 64rem) 25vw, 70vw"
           priority={priority}
+          unoptimized={isLoopbackUrl(src)}
           className="object-cover"
         />
       ) : (

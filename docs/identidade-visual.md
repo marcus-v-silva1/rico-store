@@ -48,6 +48,10 @@ Cores das peças (`COLORS` em `src/content/catalog.ts`): preto, branco, cinza, o
 - **Faixa de marcas** corre na horizontal.
 - Cards fazem um zoom leve de 5% ao passar o mouse.
 
-## Fotografia (a fazer)
+## Fotografia
 
-O layout usa fotos de rua em tom escuro e dessaturado: corpo inteiro ou de costas, muito concreto, pouca cor. Hoje os espaços mostram um quadro provisório (`Photo`). Para trocar, coloque a imagem em `public/images/` e passe `src` ao `<Photo>`.
+O layout usa fotos de rua em tom escuro e dessaturado: corpo inteiro ou de costas, muito concreto, pouca cor. Espaço sem foto mostra um quadro provisório (`Photo`).
+
+**Fotos de produto** são enviadas pelo painel: abra o produto em `/admin/produtos/<id>` (salve antes, se for novo) e use "Enviar fotos" no bloco Fotos. Aceita JPEG, PNG ou WebP até 5 MB; prefira fotos em pé, na proporção 4:5, que é o formato do card. A primeira foto da lista é a capa na vitrine: arraste ou use as setas para mudar a ordem. Marque a cor quando a foto mostrar uma cor específica (o card troca a foto quando o cliente escolhe a cor) e escreva o texto alternativo descrevendo a peça na foto. Sem foto, o produto não pode ser publicado como "Ativo".
+
+**Fotos do hero e de outros espaços fixos do layout** continuam em `public/images/`: coloque a imagem lá e passe `src` ao `<Photo>`.
