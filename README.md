@@ -26,17 +26,23 @@ Como funciona a segurança:
 
 ## Rodando
 
-Precisa de Node 22+ e, para o login, Docker (Supabase local).
+Precisa de Node 22+ e Docker (Supabase local): o catálogo e o login vêm do banco.
 
 ```bash
 npm install
-cp .env.example .env.local     # só para o login; sem isto a vitrine já roda
-npm run db:start               # sobe o Supabase local, aplica as migrations e imprime as chaves
+cp .env.example .env.local     # URL e anon key do Supabase
+npm run db:start               # sobe o Supabase local, aplica as migrations e o seed e imprime as chaves
 # cole a URL e a anon key (npx supabase status) em .env.local
 npm run dev
 ```
 
-O catálogo (produtos, categorias, coleções e cores) vem do banco. Sem Supabase configurado, `/login` avisa que o login está desligado.
+O catálogo (produtos, categorias, coleções e cores) vem do banco. Sem Supabase configurado, o site abre sem produtos ("Ainda não há peças aqui. Volte em breve.") e `/login` avisa que o login está desligado.
+
+Em produção:
+
+1. Aplique as migrations: `npx supabase db push`.
+2. **Uma vez só**, carregue o catálogo inicial: `npx supabase db push --include-seed`, ou cole e rode `supabase/seed.sql` no SQL Editor. O `db push` sozinho não roda o seed: sem este passo a loja abre vazia. O seed pode rodar de novo sem duplicar nada (o que já existe fica como está), mas recria peças do catálogo inicial que você tenha apagado.
+3. Em _Authentication → URL Configuration_, informe a URL do site.
 
 Comandos do banco:
 
@@ -60,9 +66,7 @@ Comandos do banco:
 
 ### Onde mantenho o catálogo
 
-Em `/admin`: produtos (com grade de cor × tamanho e fotos), categorias, coleções e cores. Cada alteração atualiza a vitrine na hora (tag de cache `catalogo`). As fotos ficam no bucket `produtos` do Supabase Storage.
-
-Em produção, aplique as migrations (`supabase db push`) e, em _Authentication → URL Configuration_, informe a URL do site.
+Em `/admin`: produtos (com grade de cor × tamanho, cor principal e fotos), categorias, coleções e cores. A cor principal é a que o card da loja mostra primeiro. Cada alteração atualiza a vitrine na hora (tag de cache `catalogo`). As fotos ficam no bucket `produtos` do Supabase Storage.
 
 ## Estrutura
 
