@@ -12,13 +12,14 @@ import { Button } from "./ui/button";
 const tag = "label absolute top-3 left-3 z-10 bg-ink px-2 py-1 text-[0.625rem] tracking-normal text-bone normal-case";
 
 export function ProductCard({ product }: { product: CatalogProduct }) {
-  // Até o visitante escolher, vale a primeira cor e o texto de `detail`.
+  // Até o visitante escolher, vale a primeira cor (a principal) e o texto de `detail`.
   const [picked, setPicked] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
   const color = product.colors.find((c) => c.slug === picked) ?? product.colors[0];
   const detail = picked && color ? color.label : product.detail;
   const image = product.images.find((i) => color && i.colorSlug === color.slug) ?? product.images[0];
-  const canBuy = !product.soldOut && color !== undefined;
+  // Estoque só em cores desativadas: sem cor para escolher, o card fica esgotado.
+  const unavailable = product.soldOut || product.colors.length === 0;
 
   function add() {
     if (!color) return;
@@ -30,7 +31,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
   return (
     <article className="group">
       <div className="relative aspect-[4/5] bg-concrete">
-        {product.soldOut ? <span className={tag}>Esgotado</span> : product.isNew && <span className={tag}>Novo</span>}
+        {unavailable ? <span className={tag}>Esgotado</span> : product.isNew && <span className={tag}>Novo</span>}
         {image ? (
           <Photo
             src={image.url}
@@ -74,13 +75,13 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
         ) : (
           <span />
         )}
-        {canBuy ? (
-          <Button variant="outline" size="sm" onClick={add} aria-live="polite">
-            {added ? "Na sacola" : "Adicionar"}
-          </Button>
-        ) : (
+        {unavailable ? (
           <Button variant="outline" size="sm" disabled>
             Esgotado
+          </Button>
+        ) : (
+          <Button variant="outline" size="sm" onClick={add} aria-live="polite">
+            {added ? "Na sacola" : "Adicionar"}
           </Button>
         )}
       </div>

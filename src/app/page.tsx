@@ -9,6 +9,7 @@ import { LinkButton } from "@/components/ui/button";
 import { getFeaturedProducts, getHomeCategories } from "@/lib/catalog/queries";
 
 const container = "mx-auto max-w-[88rem] px-(--gutter)";
+const EMPTY = "Ainda não há peças aqui. Volte em breve.";
 
 const instagramUrl = isPlaceholder(SITE.instagram)
   ? "https://www.instagram.com/"
@@ -65,23 +66,27 @@ export default async function HomePage() {
         <h2 id="categorias" className="heading text-2xl">
           Comprar por categoria
         </h2>
-        <ul className="rail mt-6">
-          {categories.map(({ slug, name, kicker, garment }) => (
-            <li key={slug}>
-              <NavLink href={`/categoria/${slug}`} className="group block">
-                <div className="grid aspect-[4/5] place-items-center bg-concrete">
-                  <Garment
-                    kind={garment}
-                    color={garment === "tee" ? "#f6f5f1" : "#121212"}
-                    className="size-[62%] transition-transform duration-500 ease-out group-hover:scale-105"
-                  />
-                </div>
-                <p className="mt-3 text-[0.8125rem] font-semibold">{name}</p>
-                <p className="label mt-1 text-[0.625rem] text-stone">{kicker}</p>
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+        {categories.length > 0 ? (
+          <ul className="rail mt-6">
+            {categories.map(({ slug, name, kicker, garment }) => (
+              <li key={slug}>
+                <NavLink href={`/categoria/${slug}`} className="group block">
+                  <div className="grid aspect-[4/5] place-items-center bg-concrete">
+                    <Garment
+                      kind={garment}
+                      color={garment === "tee" ? "#f6f5f1" : "#121212"}
+                      className="size-[62%] transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                  </div>
+                  <p className="mt-3 text-[0.8125rem] font-semibold">{name}</p>
+                  <p className="label mt-1 text-[0.625rem] text-stone">{kicker}</p>
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-6 text-sm text-stone">{EMPTY}</p>
+        )}
       </section>
 
       {/* Novidades ----------------------------------------------------------- */}
@@ -90,20 +95,26 @@ export default async function HomePage() {
           <h2 id="novidades" className="heading text-2xl">
             Novidades em Street
           </h2>
-          <NavLink
-            href="/colecao/street"
-            className="text-xs font-semibold whitespace-nowrap underline underline-offset-4"
-          >
-            Ver tudo em Street
-          </NavLink>
+          {featured.length > 0 && (
+            <NavLink
+              href="/colecao/street"
+              className="text-xs font-semibold whitespace-nowrap underline underline-offset-4"
+            >
+              Ver tudo em Street
+            </NavLink>
+          )}
         </div>
-        <ul className="rail mt-6 lg:gap-y-10">
-          {featured.map((product) => (
-            <li key={product.slug}>
-              <ProductCard product={product} />
-            </li>
-          ))}
-        </ul>
+        {featured.length > 0 ? (
+          <ul className="rail mt-6 lg:gap-y-10">
+            {featured.map((product) => (
+              <li key={product.slug}>
+                <ProductCard product={product} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-6 text-sm text-stone">{EMPTY}</p>
+        )}
       </section>
 
       {/* Lookbook ------------------------------------------------------------ */}
