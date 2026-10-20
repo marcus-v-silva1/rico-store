@@ -229,6 +229,9 @@ insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
 values ('produtos', 'produtos', true, 5242880, array['image/jpeg', 'image/png', 'image/webp'])
 on conflict (id) do nothing;
 
+create policy "produtos: admin lê fotos"
+  on storage.objects for select to authenticated
+  using (bucket_id = 'produtos' and (select public.current_app_role()) = 'admin');
 create policy "produtos: admin envia fotos"
   on storage.objects for insert to authenticated
   with check (bucket_id = 'produtos' and (select public.current_app_role()) = 'admin');

@@ -1,5 +1,5 @@
 begin;
-select plan(8);
+select plan(10);
 
 -- Dois usuários: o gatilho cria os perfis de cliente; promovemos um a admin (sem auth.uid() a trava não se aplica).
 insert into auth.users (id, email) values
@@ -15,6 +15,7 @@ insert into public.colors (id, slug, label, hex, active) values
 insert into public.products (slug, name, category_id, price_cents, garment, status) values
   ('ativo-x', 'Ativo', '00000000-0000-0000-0000-0000000000b1', 9900, 'tee', 'ativo'),
   ('rascunho-x', 'Rascunho', '00000000-0000-0000-0000-0000000000b1', 9900, 'tee', 'rascunho');
+insert into storage.objects (bucket_id, name) values ('produtos', 'teste/foto.jpg');
 
 -- Visitante
 set local role anon;
@@ -35,6 +36,10 @@ select results_eq(
   'cliente não atualiza preço'
 );
 
+select is(
+  (select count(*) from storage.objects where bucket_id = 'produtos'), 0::bigint, 'cliente não lista fotos pela API'
+);
+
 -- Admin
 set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}';
 select lives_ok(
@@ -43,6 +48,10 @@ select lives_ok(
 );
 select is((select count(*) from public.products where slug = 'rascunho-x'), 1::bigint, 'admin lê rascunho');
 select is((select count(*) from public.colors where slug = 'oculta'), 1::bigint, 'admin lê cor inativa');
+select is(
+  (select count(*) from storage.objects where bucket_id = 'produtos' and name = 'teste/foto.jpg'), 1::bigint,
+  'admin lê objetos do bucket produtos'
+);
 
 select * from finish();
 rollback;
