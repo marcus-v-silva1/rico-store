@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminNav } from "@/components/admin-nav";
 import { LinkButton } from "@/components/ui/button";
 import { Panel, Stat } from "@/components/panel";
 import { requireRole } from "@/lib/auth";
@@ -17,13 +18,17 @@ async function Dashboard() {
 
   return (
     <div className="space-y-10">
+      <AdminNav current="painel" />
       <div className="grid gap-3 sm:grid-cols-3 lg:max-w-3xl">
         {counts.map(({ role, count }) => (
           <Stat key={role} label={`${ROLE_LABEL[role]}s`} value={count} />
         ))}
       </div>
       <div className="flex flex-wrap gap-3">
-        <LinkButton href="/admin/equipe">Gerenciar equipe</LinkButton>
+        <LinkButton href="/admin/produtos/novo">Cadastrar produto</LinkButton>
+        <LinkButton href="/admin/equipe" variant="outline">
+          Gerenciar equipe
+        </LinkButton>
         <LinkButton href="/atendimento" variant="outline">
           Abrir atendimento
         </LinkButton>
