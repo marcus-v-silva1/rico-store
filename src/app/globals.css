@@ -171,52 +171,88 @@ body {
   }
 }
 
-/* Transição horizontal entre páginas ---------------------------------------
- * Ir para frente empurra a página atual para a esquerda; voltar, para a direita.
- * Ligada por <PageTransition> + <Link transitionTypes>; sem suporte do navegador,
- * a navegação funciona igual, só sem animação. */
-::view-transition-old(.nav-forward) {
-  --slide-offset: -64px;
-  animation:
-    160ms ease-in both vt-fade reverse,
-    420ms cubic-bezier(0.65, 0, 0.35, 1) both vt-slide reverse;
+/* Transição entre páginas: o corte inclinado da marca -----------------------
+ * A página nova entra por um corte no ângulo do itálico da Archivo (~12°): para
+ * frente, o corte corre da direita para a esquerda; para trás, o contrário. A antiga
+ * recua um pouco e escurece por baixo. Ligada por <PageTransition> + <Link
+ * transitionTypes>; sem suporte do navegador, a navegação funciona igual.
+ * --cut é o recuo horizontal do topo em relação à base na altura da tela (tan 12° ≈ 0,21).
+ * O corte só é inclinado até 100vh; abaixo da tela ele segue reto. */
+:root {
+  --cut: 22vh;
+  --cut-ease: cubic-bezier(0.7, 0, 0.15, 1);
 }
-::view-transition-new(.nav-forward) {
-  --slide-offset: 64px;
-  animation:
-    220ms ease-out 160ms both vt-fade,
-    420ms cubic-bezier(0.65, 0, 0.35, 1) both vt-slide;
+/* O retrato da página é transparente onde ela não pinta fundo: sem isto, uma aparece através da outra */
+::view-transition-old(.nav-forward),
+::view-transition-old(.nav-back),
+::view-transition-new(.nav-forward),
+::view-transition-new(.nav-back) {
+  background-color: var(--color-paper);
+}
+::view-transition-old(.nav-forward),
+::view-transition-old(.nav-back) {
+  animation: 640ms var(--cut-ease) both vt-recede;
+}
+::view-transition-old(.nav-forward) {
+  --recede: -6%;
 }
 ::view-transition-old(.nav-back) {
-  --slide-offset: 64px;
-  animation:
-    160ms ease-in both vt-fade reverse,
-    420ms cubic-bezier(0.65, 0, 0.35, 1) both vt-slide reverse;
+  --recede: 6%;
+}
+::view-transition-new(.nav-forward) {
+  animation: 640ms var(--cut-ease) both vt-cut-forward;
 }
 ::view-transition-new(.nav-back) {
-  --slide-offset: -64px;
-  animation:
-    220ms ease-out 160ms both vt-fade,
-    420ms cubic-bezier(0.65, 0, 0.35, 1) both vt-slide;
+  animation: 640ms var(--cut-ease) both vt-cut-back;
 }
-@keyframes vt-fade {
-  from {
-    opacity: 0;
-  }
+@keyframes vt-recede {
   to {
-    opacity: 1;
+    translate: var(--recede);
+    filter: brightness(0.55);
   }
 }
-@keyframes vt-slide {
+@keyframes vt-cut-forward {
   from {
-    translate: var(--slide-offset);
+    clip-path: polygon(
+      calc(100% + var(--cut)) 0,
+      calc(100% + var(--cut)) 0,
+      calc(100% + var(--cut)) 100%,
+      100% 100%,
+      100% 100vh
+    );
   }
   to {
-    translate: 0;
+    clip-path: polygon(
+      0 0,
+      calc(100% + var(--cut)) 0,
+      calc(100% + var(--cut)) 100%,
+      calc(0px - var(--cut)) 100%,
+      calc(0px - var(--cut)) 100vh
+    );
+  }
+}
+@keyframes vt-cut-back {
+  from {
+    clip-path: polygon(
+      calc(0px - var(--cut)) 0,
+      0 0,
+      calc(0px - var(--cut)) 100vh,
+      calc(0px - var(--cut)) 100%,
+      calc(0px - var(--cut)) 100%
+    );
+  }
+  to {
+    clip-path: polygon(
+      calc(0px - var(--cut)) 0,
+      calc(100% + var(--cut)) 0,
+      100% 100vh,
+      100% 100%,
+      calc(0px - var(--cut)) 100%
+    );
   }
 }
 
-/* O cabeçalho fica parado enquanto o conteúdo desliza */
+/* O cabeçalho não entra na transição */
 ::view-transition-group(site-header) {
   animation: none;
   z-index: 100;

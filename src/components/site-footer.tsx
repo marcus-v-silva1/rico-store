@@ -16,7 +16,11 @@ export async function SiteFooter() {
     console.error(error);
   }
   return (
-    <footer className="bg-ink text-bone">
+    <footer
+      className="bg-ink text-bone"
+      // Nome próprio na transição: o rodapé desliza até o lugar novo em vez de saltar por cima da página antiga
+      style={{ viewTransitionName: "site-footer" }}
+    >
       <div className="mx-auto max-w-[88rem] px-(--gutter) pt-16 pb-6">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div className="max-w-sm">
