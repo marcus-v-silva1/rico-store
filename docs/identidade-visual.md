@@ -45,14 +45,16 @@ Cores das peças: tabela `colors` no banco, cadastradas em `/admin/cores`. As in
 
 Bibliotecas: **motion** (animações), **Lenis** (rolagem suave) e **Embla** (carrossel). Tudo respeita `prefers-reduced-motion`: sem movimento, a página cai na rolagem nativa e nos trilhos de arrastar.
 
-- **Transição horizontal entre páginas** (View Transitions do React 19.3): ir para frente empurra a página para a esquerda; voltar, para a direita. O cabeçalho fica parado.
-- **Hero**: as linhas do título sobem de uma máscara e os dois quadros andam em sentidos opostos ao rolar (parallax).
+**O gesto da marca é o corte inclinado**, no ângulo do itálico da Archivo (~12°), sempre na horizontal. Ele aparece em três lugares e só neles, para continuar forte: a troca de páginas, os títulos de seção da home e as fotos do hero. O resto da página fica quieto.
+
+- **Troca de páginas** (View Transitions do React 19.3): a página nova entra por um corte inclinado. Indo para frente, o corte corre da direita para a esquerda; voltando, ao contrário. A página antiga recua um pouco e escurece por baixo. O cabeçalho fica parado e o rodapé desliza até o lugar novo. CSS em `globals.css`.
+- **Hero**: as linhas do título entram da esquerda deitadas e se endireitam no itálico; uma faixa clara inclinada atravessa cada foto e a revela (`Wipe`). Ao rolar, os dois quadros andam em sentidos opostos (parallax).
 - **Lookbook fixado**: no computador, a seção prende na tela e a rolagem vertical vira deslocamento horizontal, com barra de progresso. No celular vira trilho de arrastar.
 - **Novidades**: carrossel de arrastar com setas e barra de progresso.
 - **Marcas na loja**: carrossel infinito com duas fileiras em sentidos opostos (a de baixo só contorno); acelera com a rolagem, inverte ao rolar para cima e pausa com o mouse em cima.
 - **Cabeçalho**: some ao rolar para baixo e volta ao rolar para cima.
 - **Sacola**: gaveta que entra pela direita; abre ao adicionar uma peça.
-- **Entrada das seções**: sobem e aparecem ao entrar na tela (`Reveal`). A frase "Same clothes, different stories." é escrita letra por letra ao aparecer (`Typewriter`).
+- **Títulos de seção**: uma faixa preta inclinada cobre o título e sai pela direita, deixando-o à mostra (`Wipe`). Cards e textos não animam ao entrar. A frase "Same clothes, different stories." é escrita letra por letra ao aparecer (`Typewriter`).
 - Cards fazem um zoom leve ao passar o mouse.
 
 ## Fotografia
